@@ -1,26 +1,24 @@
-import React, { useState, useEffect, useContext } from "react";
-import PropTypes from "prop-types";
+//detalle de cada contacto
+
+
+import React, { useContext } from "react";
 import { Link, useParams } from "react-router-dom";
 import { Context } from "../store/appContext";
 
-export const Single = props => {
-	const { store, actions } = useContext(Context);
+export const Single = () => {
+	const { store } = useContext(Context);
 	const params = useParams();
+	const contact = store.contacts[params.theid];
+
 	return (
 		<div className="jumbotron">
-			<h1 className="display-4">This will show the demo element: {store.demo[params.theid].title}</h1>
-
-			<hr className="my-4" />
+			<h1 className="display-4">Contacto: {contact.name}</h1>
+			<p>Teléfono: {contact.phone}</p>
+			<p>Email: {contact.email}</p>
 
 			<Link to="/">
-				<span className="btn btn-primary btn-lg" href="#" role="button">
-					Back home
-				</span>
+				<span className="btn btn-primary btn-lg">Volver a la lista</span>
 			</Link>
 		</div>
 	);
-};
-
-Single.propTypes = {
-	match: PropTypes.object
 };

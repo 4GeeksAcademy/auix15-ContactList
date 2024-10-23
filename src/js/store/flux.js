@@ -1,45 +1,79 @@
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
-		store: {
-			demo: [
-				{
-					title: "FIRST",
-					background: "white",
-					initial: "white"
-				},
-				{
-					title: "SECOND",
-					background: "white",
-					initial: "white"
-				}
-			]
+	  store: {
+		contactsList: [],
+		selectedContact: null,
+	  },
+	  actions: {
+		fetchContacts: async () => {
+		  try {
+			const response = await fetch("https://playground.4geeks.com/contact/");
+			const data = await response.json();
+			setStore({ contactsList: data });
+		} catch (error) {
+			console.error("Error fetching contacts:", error);
+		  } 
 		},
-		actions: {
-			// Use getActions to call a function within a fuction
-			exampleFunction: () => {
-				getActions().changeColor(0, "green");
-			},
-			loadSomeData: () => {
-				/**
-					fetch().then().then(data => setStore({ "foo": data.bar }))
-				*/
-			},
-			changeColor: (index, color) => {
-				//get the store
-				const store = getStore();
 
-				//we have to loop the entire demo array to look for the respective index
-				//and change its color
-				const demo = store.demo.map((elm, i) => {
-					if (i === index) elm.background = color;
-					return elm;
-				});
-
-				//reset the global store
-				setStore({ demo: demo });
+		getAllContacts: async () => {
+			const response = await fetch("https://playground.4geeks.com/contact/agendas/MiAgenda");
+			const data = await response.json();
+			setStore({ contactsList: data });
+		},
+  
+		createNewContact: async (newContact) => {
+		  try {
+			const response = await fetch("https://playground.4geeks.com/contact/agendas/MiAgenda/contacts", {
+			  method: "POST",
+			  headers: {
+				"Content-Type": "application/json",
+			  },
+			  body: JSON.stringify(newContact),
+			});
+			if (response.ok) {
+			  getActions().fetchContacts();
 			}
-		}
+		  } catch (error) {
+			console.error("Error creating contact:", error);
+		  }
+		},
+  
+		removeContact: async (id) => {
+		  try {
+			const response = await fetch(`https://playground.4geeks.com/contact/agendas/MiAgenda/contacts/${id}`, {
+			  method: "DELETE",
+			});
+			if (response.ok) {
+			  getActions().fetchContacts();
+			}
+		  } catch (error) {
+			console.error("Error deleting contact:", error);
+		  }
+		},
+  
+		modifyContact: async (contact) => {
+		  try {
+			const response = await fetch(`https://playground.4geeks.com/contact/agendas/MiAgenda/contacts${contact.id}`, {
+			  method: "PUT",
+			  headers: {
+				"Content-Type": "application/json",
+			  },
+			  body: JSON.stringify(contact),
+			});
+			if (response.ok) {
+			  getActions().fetchContacts();
+			}
+		  } catch (error) {
+			console.error("Error updating contact:", error);
+		  }
+		},
+  
+		chooseContactToEdit: (contact) => {
+		  setStore({ selectedContact: contact });
+		},
+	  },
 	};
-};
-
-export default getState;
+  };
+  
+  export default getState;
+  
