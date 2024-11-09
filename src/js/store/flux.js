@@ -7,18 +7,14 @@ const getState = ({ getStore, getActions, setStore }) => {
 	  actions: {
 		fetchContacts: async () => {
 		  try {
-			const response = await fetch("https://playground.4geeks.com/contact/");
+			const response = await fetch("https://playground.4geeks.com/contact/agendas/MiAgenda/contacts");
 			const data = await response.json();
-			setStore({ contactsList: data });
+            console.log("ESTOS SON MIS DATOS:", data);
+            
+			setStore({ contactsList: data.contacts });
 		} catch (error) {
 			console.error("Error fetching contacts:", error);
 		  } 
-		},
-
-		getAllContacts: async () => {
-			const response = await fetch("https://playground.4geeks.com/contact/agendas/MiAgenda");
-			const data = await response.json();
-			setStore({ contactsList: data });
 		},
   
 		createNewContact: async (newContact) => {
@@ -53,7 +49,7 @@ const getState = ({ getStore, getActions, setStore }) => {
   
 		modifyContact: async (contact) => {
 		  try {
-			const response = await fetch(`https://playground.4geeks.com/contact/agendas/MiAgenda/contacts${contact.id}`, {
+			const response = await fetch(`https://playground.4geeks.com/contact/agendas/MiAgenda/contacts/${contact.id}`, {
 			  method: "PUT",
 			  headers: {
 				"Content-Type": "application/json",
